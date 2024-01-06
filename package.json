@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "atividade da rocketseat - primeiro app real com node",
   "main": "./src/server.js",
+  "type": "module",
   "scripts": {
     "start": "node ./src/server.js",
     "dev": "nodemon ./src/server.js",
@@ -24,6 +25,12 @@
   },
   "homepage": "https://github.com/christiandoramo/Aplicacao-com-node#readme",
   "dependencies": {
-    "express": "^4.18.2"
+    "express": "^4.18.2",
+    "express-async-errors": "^3.1.1",
+    "sqlite": "^5.1.1",
+    "sqlite3": "^5.1.7"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
   }
 }
