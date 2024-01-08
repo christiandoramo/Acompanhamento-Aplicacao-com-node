@@ -2,9 +2,60 @@ import { AppError } from "../utils/AppError.js";
 import { orm } from "./../database/knex/index.js";
 
 class NotesController {
-    index() {//GET
+    async index(req, res) {//GET
+        const { title, user_id, tags } = req.query
 
+        let notes
+        const user = await orm('users').where({ id: user_id }).first()
+        if (!user)
+            throw new AppError("User not found")
+
+        if (tags || title) {
+            if (tags && title) {
+                const filterTags = tags.split(',').map(tag => tag.trim())
+
+                notes = await orm("tags")
+                    .select(["notes.*"
+                    ])
+                    .where("notes.user_id", user_id)
+                    .whereLike("notes.title", `%${title}%`)
+                    .whereIn("name", filterTags)
+                    .innerJoin("notes", "notes.id", "tags.note_id")
+                    .orderBy("notes.title")
+            } else if (title) {
+                notes = await orm("notes")
+                    .where({ user_id })
+                    .whereLike("title", `%${title}%`)
+                    .orderBy("title")
+            } else {
+                const filterTags = tags.split(',').map(tag => tag.trim())
+                notes = await orm("tags")
+                    .select(["notes.*"
+                    ])
+                    .where("notes.user_id", user_id)
+                    .whereIn("name", filterTags)
+                    .innerJoin("notes", "notes.id", "tags.note_id")
+                    .orderBy("notes.title")
+            }
+        } else {
+            notes = await orm("notes")
+                .where({ user_id })
+                .orderBy("title")
+        }
+
+        const userTags = await orm("tags").where({ user_id })
+        const notesWithTags = notes.map(note => {
+            const noteTags = userTags.filter(tag => tag.note_id === note.id)
+            const noteWithTag = {
+                ...note,
+                tags: noteTags
+            }
+            return noteWithTag
+        })
+
+        return res.json(notesWithTags)
     }
+
     async show(req, res) {//GET
         const { id } = req.params
 
