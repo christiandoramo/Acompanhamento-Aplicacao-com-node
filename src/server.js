@@ -2,24 +2,24 @@ import 'express-async-errors';
 import express from 'express';
 import { AppError } from './utils/AppError.js';
 import { routes } from './routes/index.js'
-import { dbConnection } from './database/sqlite/index.js';
+import { migrationsRun } from './database/sqlite/migrations/index.js';
 
 const app = express()
 
 app.use(express.json())
 
 app.use(routes)
-dbConnection()
+await migrationsRun()
 
 app.use((error, req, res, next) => {
+    console.error(error)
     if (error instanceof AppError) { // Error de REQUISICAO(front)
+        console.log(error)
         return res.status(error.statusCode).json({
             message: error.message,
             status: "Error",
         })
     }
-
-    console.error(error)
     return res.status(500).json({ // ERROR NO BACKEND
         status: "Error",
         message: "Internal server error",

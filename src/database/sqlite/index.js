@@ -7,13 +7,11 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-function dbConnection() {
-    open({
+async function dbConnection() {
+    const db = await open({
         filename: path.resolve(__dirname, "..", "database.db"),
         driver: sqlite3.Database
-    }).then(db => {
-        console.log("Success with database connection ")
-        return db
     })
+    return db
 }
 export { dbConnection }
