@@ -1,7 +1,7 @@
-Exercícios da Rocketseat trilha Explorer
+Rocketseat trilha Explorer
 
 ### Stage 08 - Introdução ao Node
 
-## Topicp - Query builder
+## Topico - Query builder
 
-# Aplicação com node
+# Acompanhamento - Aplicação com node
